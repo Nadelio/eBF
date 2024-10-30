@@ -22,9 +22,9 @@ Lexer readChar = [
 ]
 
 Lexer peekChar -> Char = [
-    this readPos >= input count
-    => ^'\u0000'
-    |=> ^input at: (.readPos)
+    ^this readPos >= input count
+    => '\u0000'
+    |=> input at: (.readPos)
 ]
 
 Lexer nextToken -> Token = [

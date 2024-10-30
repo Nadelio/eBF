@@ -4,3 +4,4 @@ lexer input forEach: [
     tok = lexer nextToken
     ast append: tok
 ]
+ast print
