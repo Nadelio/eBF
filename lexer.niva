@@ -72,20 +72,29 @@ Lexer nextToken -> Token = [
         this peekChar == '#' => [
             this readChar
             Token kind: TokenType.DELETELABEL
-        ] |=> TokenType.INVALID
+        ] |=> Token kind: TokenType.INVALID
     ]
     | '@' => [Token kind: TokenType.JUMPLABEL]
     | '/' => [
         this peekChar == '*' => [
             this readChar
             Token kind: TokenType.COMMENTB
-        ] |=> TokenType.INVALID
+        ] |=> Token kind: TokenType.INVALID
     ]
     | '*' => [
         this peekChar == '/' => [
             this readChar
             Token kind: TokenType.COMMENTE
-        ] |=> TokenType.INVALID
+        ] |=> Token kind: TokenType.INVALID
+    ]
+    | 'E' => [
+        this peekChar == 'N' => [
+            this readChar
+            this peakChar == 'D' => [
+                this readChar
+                Token kind: TokenType.END
+            ] |=> Token kind: TokenType.ALIAS
+        ] |=> Token kind: TokenType.ALIAS
     ]
     | '\u0000' => [Token kind: TokenType.EOF]
     |=> [
