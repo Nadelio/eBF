@@ -38,7 +38,16 @@ Lexer nextToken -> Token = [
             Token kind: TokenType.POP 
         ] |=> Token kind: TokenType.MOVL
     ]
-    | '.' => [Token kind: TokenType.IN]
+    | '.' => [
+        localCh = this peekChar
+        [(localCh == ' ') || (localCh == '\t') || (localCh == '\n') || (localCh == '\r')] => [
+            this readChar
+            Token kind: TokenType.IN
+        ] |=> [
+            this readChar
+            Token kind: TokenType.ALIAS
+        ]
+    ]
     | '=' => [Token kind: TokenType.OUT]
     | '\'' => [Token kind: TokenType.READ]
     | '"' => [Token kind: TokenType.READPOS]
@@ -60,7 +69,7 @@ Lexer nextToken -> Token = [
     | '%' => [Token kind: TokenType.DPNDCALL]
     | '#' => [Token kind: TokenType.CREATELABEL]
     | '!' => [
-        this peekChar == '#' => [ //! Error here
+        this peekChar == '#' => [
             this readChar
             Token kind: TokenType.DELETELABEL
         ] |=> TokenType.INVALID
@@ -79,7 +88,15 @@ Lexer nextToken -> Token = [
         ] |=> TokenType.INVALID
     ]
     | '\u0000' => [Token kind: TokenType.EOF]
-    |=> [Token kind: TokenType.INVALID]
+    |=> [
+        ch isLetter => [
+            lit = this readIdentifier
+            ^ Token lit: lit kind: TokenType.ALIAS
+        ] |=> [Token kind: TokenType.INVALID]
+    ]
+
+    .readChar
+    ^ tok
 ]
 
 Lexer skipWhiteSpaces = [
