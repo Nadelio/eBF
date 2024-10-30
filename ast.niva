@@ -10,3 +10,16 @@ AST print = [
         (it toString) echo
     ]
 ]
+
+type ASTC commands: MutableList::Command
+
+constructor ASTC empty = [
+    ASTC commands: {}
+]
+
+ASTC append::Command = commands add: append
+ASTC print = [
+    commands forEach: [
+        (it toString) echo
+    ]
+]

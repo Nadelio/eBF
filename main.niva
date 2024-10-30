@@ -1,7 +1,16 @@
-lexer = Lexer input: "+ + + + > < << >> DPND somefile.ebf foo END"
+lexer = Lexer input: "++++ > < << >> /*some comment*/ DPND somefile.ebf foo % foo # bar\n@bar\r!#bar\tEND"
+
 ast = AST empty
 [lexer ch != '\u0000'] whileTrue: [
     tok = lexer nextToken
     ast append: tok
 ]
-ast print
+
+ast print // debug
+
+astc = ASTC empty
+secondPass = SecondPass ast: ast
+[secondPass tok kind != TokenKind.END] whileTrue: [
+    command = secondPass nextToken
+    astc append: command
+]

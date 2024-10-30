@@ -1,0 +1,39 @@
+type SecondPass
+    ast: AST
+    tok: Token
+    pos: Int
+    readPos: Int
+
+constructor SecondPass ast::AST = [
+    token = Token kind: TokenType.INVALID
+    sp = SecondPass ast: ast tok: token pos: 0 readPos: 0
+    sp readToken
+    ^sp
+]
+
+SecondPass readToken = [
+    readPos >= ast tokens count =>
+        tok <- Token kind: TokenType.EOF |=> 
+        tok <- ast tokens at: readPos
+
+    pos <- readPos
+    readPos <- readPos inc
+]
+
+SecondPass peekToken -> Token = [
+    ^this readPos >= ast tokens count =>
+    Token kind: TokenType.EOF |=>
+    ast tokens at: (.readPos)
+]
+
+SecondPass expect::TokenType = [
+    tok = this peekToken
+    tok kind != expect => [
+        tok kind == TokenType.EOF => [
+            "Expected: " + expect v + ", but got EOF," |> echo
+        ] |=> [
+            "Expected: " + expect v + ", but got " |> append: tok kind |> append: "." |> echo
+        ]
+    ]
+    this readToken
+]
