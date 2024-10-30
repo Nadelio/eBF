@@ -26,14 +26,50 @@ SecondPass peekToken -> Token = [
     ast tokens at: (.readPos)
 ]
 
-SecondPass expect::TokenType = [
+SecondPass expect::TokenType -> Boolean = [
     tok = this peekToken
     tok kind != expect => [
         tok kind == TokenType.EOF => [
             "Expected: " + expect v + ", but got EOF," |> echo
+            ^false
         ] |=> [
             "Expected: " + expect v + ", but got " |> append: tok kind |> append: "." |> echo
+            ^false
         ]
     ]
     this readToken
+    ^true
+]
+
+SecondPass nextToken -> Command = [
+    cmd = | tok
+    | TokenType.INC => [Command kind: CommandType.INC]
+    | TokenType.DEC => [Command kind: CommandType.DEC]
+    | TokenType.MOVR => [Command kind: CommandType.MOVR]
+    | TokenType.MOVL => [Command kind: CommandType.MOVL]
+    | TokenType.PUSH => [Command kind: CommandType.PUSH]
+    | TokenType.POP => [Command kind: CommandType.POP]
+    | TokenType.IN => [Command kind: CommandType.IN]
+    | TokenType.OUT => [Command kind: CommandType.OUT]
+    | TokenType.READ => [Command kind: CommandType.READ]
+    | TokenType.READPOS => [Command kind: CommandType.READPOS]
+    | TokenType.WRITE => [Command kind: CommandType.WRITE]
+    | TokenType.LOOPB => [Command kind: CommandType.LOOPB]
+    | TokenType.LOOPE => [Command kind: CommandType.LOOPE]
+    | TokenType.DPND => [
+        this peekToken == TokenType.ALIAS => [
+            this readToken
+            
+            this.peekToken == TokenType.FILE => [
+                this readToken
+                this.peekToken == TokenType.ALIAS => [
+                    this readToken
+                    this.peekToken == TokenType.ALIAS => [
+                        this readToken
+                        Command kind: CommandType.DPND
+                    ]
+                ]
+            ]
+        ]
+    ]
 ]

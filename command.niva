@@ -7,7 +7,7 @@ constructor Command kind::CommandType =
         kind: kind
         literal: kind lit
 
-enum CommandType lit: List::Token =
+enum CommandType lit: List::TokenType =
     | INVALID lit: {TokenType.INVALID}
     | END lit: {TokenType.END}
     | EOF lit: {TokenType.EOF}
