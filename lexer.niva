@@ -10,6 +10,8 @@ constructor Lexer input::String = [
     ^l
 ]
 
+Char isWhitespace -> Boolean = ^ (ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r')
+
 Lexer readChar = [
     readPos >= input count =>
         ch <- '\u0000' |=>
@@ -19,7 +21,11 @@ Lexer readChar = [
     readPos <- readPos inc
 ]
 
-Lexer peekChar = [ this readPos >= input count => '\u0000' |=> input at: (.readPos) ]
+Lexer peekChar -> Char = [
+    this readPos >= input count
+    => ^'\u0000'
+    |=> ^input at: (.readPos)
+]
 
 Lexer nextToken -> Token = [
     .skipWhiteSpaces
@@ -39,8 +45,7 @@ Lexer nextToken -> Token = [
         ] |=> Token kind: TokenType.MOVL
     ]
     | '.' => [
-        localCh = this peekChar
-        [(localCh == ' ') || (localCh == '\t') || (localCh == '\n') || (localCh == '\r')] => [
+        this peekChar isWhitespace => [
             this readChar
             Token kind: TokenType.IN
         ] |=> [
