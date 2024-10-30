@@ -32,3 +32,4 @@ enum TokenType v: String =
     | JUMPLABEL v: "@"
     | COMMENTB v: "/*"
     | COMMENTE v: "*/"
+    | FILE v: "."

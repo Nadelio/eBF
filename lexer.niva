@@ -10,7 +10,7 @@ constructor Lexer input::String = [
     ^l
 ]
 
-Char isWhitespace -> Boolean = ^ (ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r')
+Char isWhitespace -> Boolean = ^ (this == ' ') || (this == '\t') || (this == '\n') || (this == '\r')
 
 Lexer readChar = [
     readPos >= input count =>
@@ -50,7 +50,7 @@ Lexer nextToken -> Token = [
             Token kind: TokenType.IN
         ] |=> [
             this readChar
-            Token kind: TokenType.ALIAS
+            Token kind: TokenType.FILE
         ]
     ]
     | '=' => [Token kind: TokenType.OUT]
@@ -67,9 +67,9 @@ Lexer nextToken -> Token = [
                 this peekChar == 'D' => [
                     this readChar
                     Token kind: TokenType.DPND
-                ] |=> Token kind: TokenType.ALIAS
-            ] |=> Token kind: TokenType.ALIAS
-        ] |=> Token kind: TokenType.ALIAS
+                ] |=> Token kind: TokenType.INVALID
+            ] |=> Token kind: TokenType.INVALID
+        ] |=> Token kind: TokenType.INVALID
     ]
     | '%' => [Token kind: TokenType.DPNDCALL]
     | '#' => [Token kind: TokenType.CREATELABEL]
@@ -95,22 +95,31 @@ Lexer nextToken -> Token = [
     | 'E' => [
         this peekChar == 'N' => [
             this readChar
-            this peakChar == 'D' => [
+            this peekChar == 'D' => [
                 this readChar
                 Token kind: TokenType.END
-            ] |=> Token kind: TokenType.ALIAS
-        ] |=> Token kind: TokenType.ALIAS
+            ] |=> Token kind: TokenType.INVALID
+        ] |=> Token kind: TokenType.INVALID
     ]
     | '\u0000' => [Token kind: TokenType.EOF]
     |=> [
         ch isLetter => [
             lit = this readIdentifier
-            ^ Token lit: lit kind: TokenType.ALIAS
+            ^ Token literal: lit kind: TokenType.ALIAS
         ] |=> [Token kind: TokenType.INVALID]
     ]
 
     .readChar
     ^ tok
+]
+
+Lexer readIdentifier -> String = [
+  localPos = pos
+  [ch isLetter] whileTrue: [
+    .readChar
+  ]
+  result = input slice: localPos..<pos
+  ^result
 ]
 
 Lexer skipWhiteSpaces = [
