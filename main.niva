@@ -1,4 +1,4 @@
-lexer = Lexer input: "+ + + + > < END"
+lexer = Lexer input: "+ + + + > < << >> DPND somefile.ebf foo END"
 ast = AST empty
 lexer input forEach: [
     tok = lexer nextToken

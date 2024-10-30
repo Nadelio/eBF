@@ -49,7 +49,6 @@ Lexer nextToken -> Token = [
             this readChar
             Token kind: TokenType.IN
         ] |=> [
-            this readChar
             Token kind: TokenType.FILE
         ]
     ]
