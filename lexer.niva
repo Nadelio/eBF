@@ -60,7 +60,7 @@ Lexer nextToken -> Token = [
     | '%' => [Token kind: TokenType.DPNDCALL]
     | '#' => [Token kind: TokenType.CREATELABEL]
     | '!' => [
-        this peekChar == '#' => [
+        this peekChar == '#' => [ //! Error here
             this readChar
             Token kind: TokenType.DELETELABEL
         ] |=> TokenType.INVALID
@@ -78,6 +78,12 @@ Lexer nextToken -> Token = [
             Token kind: TokenType.COMMENTE
         ] |=> TokenType.INVALID
     ]
-    | '\u0000' => Token kind: TokenType.EOF
-    |=> Token kind: TokenType.INVALID
+    | '\u0000' => [Token kind: TokenType.EOF]
+    |=> [Token kind: TokenType.INVALID]
+]
+
+Lexer skipWhiteSpaces = [
+    [(ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r')] whileTrue: [
+        .readChar
+    ]
 ]

@@ -1,0 +1,34 @@
+type Token
+    kind: TokenType
+    literal: String
+
+constructor Token kind::TokenType =
+    Token
+        kind: kind
+        literal: kind v
+
+enum TokenType v: String =
+    | INVALID v: "INVALID"
+    | ALIAS v: "ALIAS"
+    | END v: "END"
+    | EOF v: "\u0000"
+    | INC v: "+"
+    | DEC v: "-"
+    | MOVR v: ">"
+    | MOVL v: "<"
+    | IN v: "."
+    | OUT v: "v:"
+    | READ v: "'"
+    | READPOS v: "\""
+    | WRITE v: ","
+    | LOOPB v: "["
+    | LOOPE v: "]"
+    | PUSH v: ">>"
+    | POP v: "<<"
+    | DPND v: "DPND"
+    | DPNDCALL v: "%"
+    | CREATELABEL v: "#"
+    | DELETELABEL v: "!#"
+    | JUMPLABEL v: "@"
+    | COMMENTB v: "/*"
+    | COMMENTE v: "*/"
