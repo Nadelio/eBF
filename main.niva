@@ -1,6 +1,6 @@
 lexer = Lexer input: "+ + + + > < << >> DPND somefile.ebf foo END"
 ast = AST empty
-lexer input forEach: [
+[lexer ch != '\u0000'] whileTrue: [
     tok = lexer nextToken
     ast append: tok
 ]

@@ -7,6 +7,6 @@ constructor AST empty = [
 AST append::Token = tokens add: append
 AST print = [
     tokens forEach: [
-        ("Token: " + it toString) echo
+        (it toString) echo
     ]
 ]
