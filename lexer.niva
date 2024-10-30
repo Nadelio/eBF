@@ -1,0 +1,83 @@
+type Lexer
+    input: String
+    pos: Int
+    readPos: Int
+    ch: Char
+
+constructor Lexer input::String = [
+    l = Lexer input: input pos: 0 readPos: 0 ch: '0'
+    l readChar
+    ^l
+]
+
+Lexer readChar = [
+    readPos >= input count =>
+        ch <- '\u0000' |=>
+        ch <- input at: readPos
+    
+    pos <- readPos
+    readPos <- readPos inc
+]
+
+Lexer peekChar = [ this readPos >= input count => '\u0000' |=> input at: (.readPos) ]
+
+Lexer nextToken -> Token = [
+    .skipWhiteSpaces
+    tok = | ch
+    | '+' => [Token kind: TokenType.INC]
+    | '-' => [Token kind: TokenType.DEC]
+    | '>' => [
+        this peekChar == '>' => [
+            this readChar
+            Token kind: TokenType.PUSH
+        ] |=> Token kind: TokenType.MOVR
+    ]
+    | '<' => [
+        this peekChar == '<' => [
+            this readChar
+            Token kind: TokenType.POP 
+        ] |=> Token kind: TokenType.MOVL
+    ]
+    | '.' => [Token kind: TokenType.IN]
+    | '=' => [Token kind: TokenType.OUT]
+    | '\'' => [Token kind: TokenType.READ]
+    | '"' => [Token kind: TokenType.READPOS]
+    | ',' => [Token kind: TokenType.WRITE]
+    | '[' => [Token kind: TokenType.LOOPB]
+    | ']' => [Token kind: TokenType.LOOPE]
+    | 'D' => [
+        this peekChar == 'P' => [
+            this readChar
+            this peekChar == 'N' => [
+                this readChar
+                this peekChar == 'D' => [
+                    this readChar
+                    Token kind: TokenType.DPND
+                ] |=> Token kind: TokenType.ALIAS
+            ] |=> Token kind: TokenType.ALIAS
+        ] |=> Token kind: TokenType.ALIAS
+    ]
+    | '%' => [Token kind: TokenType.DPNDCALL]
+    | '#' => [Token kind: TokenType.CREATELABEL]
+    | '!' => [
+        this peekChar == '#' => [
+            this readChar
+            Token kind: TokenType.DELETELABEL
+        ] |=> TokenType.INVALID
+    ]
+    | '@' => [Token kind: TokenType.JUMPLABEL]
+    | '/' => [
+        this peekChar == '*' => [
+            this readChar
+            Token kind: TokenType.COMMENTB
+        ] |=> TokenType.INVALID
+    ]
+    | '*' => [
+        this peekChar == '/' => [
+            this readChar
+            Token kind: TokenType.COMMENTE
+        ] |=> TokenType.INVALID
+    ]
+    | '\u0000' => Token kind: TokenType.EOF
+    |=> Token kind: TokenType.INVALID
+]
