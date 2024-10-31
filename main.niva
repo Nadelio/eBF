@@ -9,8 +9,8 @@ ast = AST empty
 ast print // debug
 
 astc = ASTC empty
-secondPass = SecondPass ast: ast
-[secondPass tok kind != TokenType.END] whileTrue: [
-    command = secondPass nextToken
+parser = Parser ast: ast
+[parser tok kind != TokenType.END] whileTrue: [
+    command = parser nextToken
     astc append: command
 ]

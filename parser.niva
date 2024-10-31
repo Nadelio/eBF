@@ -1,17 +1,17 @@
-type SecondPass
+type Parser
     ast: AST
     tok: Token
     pos: Int
     readPos: Int
 
-constructor SecondPass ast::AST = [
+constructor Parser ast::AST = [
     token = Token kind: TokenType.INVALID
-    sp = SecondPass ast: ast tok: token pos: 0 readPos: 0
+    sp = Parser ast: ast tok: token pos: 0 readPos: 0
     sp readToken
     ^sp
 ] 
 
-SecondPass readToken = [
+Parser readToken = [
     readPos >= ast tokens count =>
         tok <- Token kind: TokenType.EOF |=> 
         tok <- ast tokens at: readPos
@@ -20,13 +20,13 @@ SecondPass readToken = [
     readPos <- readPos inc
 ]
 
-SecondPass peekToken -> Token = [
+Parser peekToken -> Token = [
     ^this readPos >= ast tokens count =>
     Token kind: TokenType.EOF |=>
     ast tokens at: (.readPos)
 ]
 
-SecondPass expect::TokenType -> Boolean = [
+Parser expect::TokenType -> Boolean = [
     tok = this peekToken
     tok kind != expect => [
         tok kind == TokenType.EOF => [
@@ -41,7 +41,7 @@ SecondPass expect::TokenType -> Boolean = [
     ^true
 ]
 
-SecondPass nextToken -> Command = [ //TODO: Refactor to use Command union
+Parser nextToken -> Command = [ //TODO: Refactor to use Command union
    cmd = | tok kind
     | TokenType.INC => [UnaryCommand kind: TokenType.INC]
     | TokenType.DEC => [UnaryCommand kind: TokenType.DEC]
