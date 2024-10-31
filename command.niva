@@ -1,33 +1,6 @@
-type Command
-    kind: CommandType
-    literal: List::TokenType
+union Command =
+    | DPND fileName: String alias: String // CREATEDPND
+    | UnaryCommand kind: TokenType // everything but DPND instructions and Label instructions
+    | BinaryCommand kind: TokenType alias: String // label instructions and DPNDCALL
 
-constructor Command kind::CommandType = 
-    Command
-        kind: kind
-        literal: kind lit
-
-enum CommandType lit: List::TokenType =
-    | INVALID lit: {TokenType.INVALID}
-    | END lit: {TokenType.END}
-    | EOF lit: {TokenType.EOF}
-    | INC lit: {TokenType.INC}
-    | DEC lit: {TokenType.DEC}
-    | MOVR lit: {TokenType.MOVR}
-    | MOVL lit: {TokenType.MOVL}
-    | IN lit: {TokenType.IN}
-    | OUT lit: {TokenType.OUT}
-    | READ lit: {TokenType.READ}
-    | READPOS lit: {TokenType.READPOS}
-    | WRITE lit: {TokenType.WRITE}
-    | LOOPB lit: {TokenType.LOOPB}
-    | LOOPE lit: {TokenType.LOOPE}
-    | PUSH lit: {TokenType.PUSH}
-    | POP lit: {TokenType.POP}
-    | DPND lit: {TokenType.DPND, TokenType.ALIAS, TokenType.FILE, TokenType.ALIAS, TokenType.ALIAS}
-    | DPNDCALL lit: {TokenType.DPNDCALL, TokenType.ALIAS}
-    | CREATELABEL lit: {TokenType.CREATELABEL, TokenType.ALIAS}
-    | DELETELABEL lit: {TokenType.DELETELABEL, TokenType.ALIAS}
-    | JUMPLABEL lit: {TokenType.JUMPLABEL, TokenType.ALIAS}
-    | COMMENTB lit: {TokenType.COMMENTB}
-    | COMMENTE lit: {TokenType.COMMENTE}
+constructor Command file::String alias::String = DPND fileName: file alias: alias

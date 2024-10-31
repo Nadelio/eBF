@@ -41,22 +41,22 @@ SecondPass expect::TokenType -> Boolean = [
     ^true
 ]
 
-SecondPass nextToken -> Command = [
+SecondPass nextToken -> Command = [ //TODO: Refactor to use Command union
    cmd = | tok kind
-    | TokenType.INC => [Command kind: CommandType.INC]
-    | TokenType.DEC => [Command kind: CommandType.DEC]
-    | TokenType.MOVR => [Command kind: CommandType.MOVR]
-    | TokenType.MOVL => [Command kind: CommandType.MOVL]
-    | TokenType.PUSH => [Command kind: CommandType.PUSH]
-    | TokenType.POP => [Command kind: CommandType.POP]
-    | TokenType.IN => [Command kind: CommandType.IN]
-    | TokenType.OUT => [Command kind: CommandType.OUT]
-    | TokenType.READ => [Command kind: CommandType.READ]
-    | TokenType.READPOS => [Command kind: CommandType.READPOS]
-    | TokenType.WRITE => [Command kind: CommandType.WRITE]
-    | TokenType.LOOPB => [Command kind: CommandType.LOOPB]
-    | TokenType.LOOPE => [Command kind: CommandType.LOOPE]
-    | TokenType.DPND => [
+    | TokenType.INC => [UnaryCommand kind: TokenType.INC]
+    | TokenType.DEC => [UnaryCommand kind: TokenType.DEC]
+    | TokenType.MOVR => [UnaryCommand kind: TokenType.MOVR]
+    | TokenType.MOVL => [UnaryCommand kind: TokenType.MOVL]
+    | TokenType.PUSH => [UnaryCommand kind: TokenType.PUSH]
+    | TokenType.POP => [UnaryCommand kind: TokenType.POP]
+    | TokenType.IN => [UnaryCommand kind: TokenType.IN]
+    | TokenType.OUT => [UnaryCommand kind: TokenType.OUT]
+    | TokenType.READ => [UnaryCommand kind: TokenType.READ]
+    | TokenType.READPOS => [UnaryCommand kind: TokenType.READPOS]
+    | TokenType.WRITE => [UnaryCommand kind: TokenType.WRITE]
+    | TokenType.LOOPB => [UnaryCommand kind: TokenType.LOOPB]
+    | TokenType.LOOPE => [UnaryCommand kind: TokenType.LOOPE]
+    | TokenType.DPND => [ //TODO: properly construct DPND command
         this peekToken kind == TokenType.ALIAS => [
             this readToken
             
@@ -66,24 +66,23 @@ SecondPass nextToken -> Command = [
                     this readToken
                     this peekToken kind == TokenType.ALIAS => [
                         this readToken
-                        Command kind: CommandType.DPND
-                    ] |=> Command kind: CommandType.INVALID
-                ] |=> Command kind: CommandType.INVALID
-            ] |=> Command kind: CommandType.INVALID
-        ] |=> Command kind: CommandType.INVALID
+                        Command file: /* build file name */ alias: /* build alias */
+                    ] |=> Command kind: TokenType.INVALID
+                ] |=> Command kind: TokenType.INVALID
+            ] |=> Command kind: TokenType.INVALID
+        ] |=> Command kind: TokenType.INVALID
     ]
 
-    | TokenType.INVALID => [Command kind: CommandType.INVALID]
-    | TokenType.ALIAS => [Command kind: CommandType.INVALID]
-    | TokenType.END => [Command kind: CommandType.INVALID]
-    | TokenType.EOF => [Command kind: CommandType.INVALID]
-    | TokenType.DPNDCALL => [Command kind: CommandType.INVALID]
-    | TokenType.CREATELABEL => [Command kind: CommandType.INVALID]
-    | TokenType.JUMPLABEL => [Command kind: CommandType.INVALID]
-    | TokenType.COMMENTB => [Command kind: CommandType.INVALID]
-    | TokenType.COMMENTE => [Command kind: CommandType.INVALID]
-    | TokenType.FILE => [Command kind: CommandType.INVALID]
-    | TokenType.DELETELABEL => [Command kind: CommandType.INVALID]
+    // TODO: get the alias token for each of the binary commands
+    | TokenType.INVALID => [UnaryCommand kind: TokenType.INVALID]
+    | TokenType.END => [UnaryCommand kind: TokenType.END]
+    | TokenType.EOF => [UnaryCommand kind: TokenType.EOF]
+    | TokenType.DPNDCALL => [BinaryCommand kind: TokenType.DPNDCALL alias: tok literal]
+    | TokenType.CREATELABEL => [BinaryCommand kind: TokenType.CREATELABEL alias: tok literal]
+    | TokenType.JUMPLABEL => [BinaryCommand kind: TokenType.JUMPLABEL alias: tok literal]
+    | TokenType.COMMENTB => [UnaryCommand kind: TokenType.INVALID]
+    | TokenType.COMMENTE => [UnaryCommand kind: TokenType.INVALID]
+    | TokenType.DELETELABEL => [BinaryCommand kind: TokenType.DELETELABEL alias: tok literal]
     
 
     ^cmd 
