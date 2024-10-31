@@ -6,9 +6,9 @@ type Parser
 
 constructor Parser ast::AST = [
     token = Token kind: TokenType.INVALID
-    sp = Parser ast: ast tok: token pos: 0 readPos: 0
-    sp readToken
-    ^sp
+    p = Parser ast: ast tok: token pos: 0 readPos: 0
+    p readToken
+    ^p
 ] 
 
 Parser readToken = [
