@@ -9,7 +9,7 @@ constructor SecondPass ast::AST = [
     sp = SecondPass ast: ast tok: token pos: 0 readPos: 0
     sp readToken
     ^sp
-]
+] 
 
 SecondPass readToken = [
     readPos >= ast tokens count =>
@@ -33,7 +33,7 @@ SecondPass expect::TokenType -> Boolean = [
             "Expected: " + expect v + ", but got EOF," |> echo
             ^false
         ] |=> [
-            "Expected: " + expect v + ", but got " |> append: tok kind |> append: "." |> echo
+            "Expected: " + expect v + ", but got " + tok kind toString + "." |> echo
             ^false
         ]
     ]
@@ -42,7 +42,7 @@ SecondPass expect::TokenType -> Boolean = [
 ]
 
 SecondPass nextToken -> Command = [
-    cmd = | tok
+   cmd = | tok kind
     | TokenType.INC => [Command kind: CommandType.INC]
     | TokenType.DEC => [Command kind: CommandType.DEC]
     | TokenType.MOVR => [Command kind: CommandType.MOVR]
@@ -57,19 +57,35 @@ SecondPass nextToken -> Command = [
     | TokenType.LOOPB => [Command kind: CommandType.LOOPB]
     | TokenType.LOOPE => [Command kind: CommandType.LOOPE]
     | TokenType.DPND => [
-        this peekToken == TokenType.ALIAS => [
+        this peekToken kind == TokenType.ALIAS => [
             this readToken
             
-            this.peekToken == TokenType.FILE => [
+            this peekToken kind == TokenType.FILE => [
                 this readToken
-                this.peekToken == TokenType.ALIAS => [
+                this peekToken kind == TokenType.ALIAS => [
                     this readToken
-                    this.peekToken == TokenType.ALIAS => [
+                    this peekToken kind == TokenType.ALIAS => [
                         this readToken
                         Command kind: CommandType.DPND
-                    ]
-                ]
-            ]
-        ]
+                    ] |=> Command kind: CommandType.INVALID
+                ] |=> Command kind: CommandType.INVALID
+            ] |=> Command kind: CommandType.INVALID
+        ] |=> Command kind: CommandType.INVALID
     ]
+
+    | TokenType.INVALID => [Command kind: CommandType.INVALID]
+    | TokenType.ALIAS => [Command kind: CommandType.INVALID]
+    | TokenType.END => [Command kind: CommandType.INVALID]
+    | TokenType.EOF => [Command kind: CommandType.INVALID]
+    | TokenType.DPNDCALL => [Command kind: CommandType.INVALID]
+    | TokenType.CREATELABEL => [Command kind: CommandType.INVALID]
+    | TokenType.JUMPLABEL => [Command kind: CommandType.INVALID]
+    | TokenType.COMMENTB => [Command kind: CommandType.INVALID]
+    | TokenType.COMMENTE => [Command kind: CommandType.INVALID]
+    | TokenType.FILE => [Command kind: CommandType.INVALID]
+    | TokenType.DELETELABEL => [Command kind: CommandType.INVALID]
+    
+
+    ^cmd 
 ]
+

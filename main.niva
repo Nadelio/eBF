@@ -10,7 +10,7 @@ ast print // debug
 
 astc = ASTC empty
 secondPass = SecondPass ast: ast
-[secondPass tok kind != TokenKind.END] whileTrue: [
+[secondPass tok kind != TokenType.END] whileTrue: [
     command = secondPass nextToken
     astc append: command
 ]
