@@ -1,6 +1,6 @@
 type Command
     kind: CommandType
-    literal: List::Token
+    literal: List::TokenType
 
 constructor Command kind::CommandType = 
     Command
