@@ -42,7 +42,7 @@ Parser expect::TokenType -> Boolean = [
 ]
 
 Parser nextToken -> Command = [ //TODO: Refactor to use Command union
-   cmd = | tok kind
+    cmd = | tok kind
     | TokenType.INC => [UnaryCommand kind: TokenType.INC]
     | TokenType.DEC => [UnaryCommand kind: TokenType.DEC]
     | TokenType.MOVR => [UnaryCommand kind: TokenType.MOVR]
@@ -56,33 +56,46 @@ Parser nextToken -> Command = [ //TODO: Refactor to use Command union
     | TokenType.WRITE => [UnaryCommand kind: TokenType.WRITE]
     | TokenType.LOOPB => [UnaryCommand kind: TokenType.LOOPB]
     | TokenType.LOOPE => [UnaryCommand kind: TokenType.LOOPE]
-    | TokenType.DPND => [ //TODO: properly construct DPND command
+    | TokenType.DPND => [
+        mut fileName = ""
         this peekToken kind == TokenType.ALIAS => [
             this readToken
-            
+            fileName <- fileName + tok literal
             this peekToken kind == TokenType.FILE => [
                 this readToken
+                fileName <- fileName + tok literal
                 this peekToken kind == TokenType.ALIAS => [
                     this readToken
+                    fileName <- fileName + tok literal
                     this peekToken kind == TokenType.ALIAS => [
                         this readToken
-                        Command file: /* build file name */ alias: /* build alias */
-                    ] |=> Command kind: TokenType.INVALID
-                ] |=> Command kind: TokenType.INVALID
-            ] |=> Command kind: TokenType.INVALID
-        ] |=> Command kind: TokenType.INVALID
+                        DPND fileName: fileName alias: tok literal
+                    ] |=> UnaryCommand kind: TokenType.INVALID
+                ] |=> UnaryCommand kind: TokenType.INVALID
+            ] |=> UnaryCommand kind: TokenType.INVALID
+        ] |=> UnaryCommand kind: TokenType.INVALID
     ]
-
-    // TODO: get the alias token for each of the binary commands
     | TokenType.INVALID => [UnaryCommand kind: TokenType.INVALID]
     | TokenType.END => [UnaryCommand kind: TokenType.END]
     | TokenType.EOF => [UnaryCommand kind: TokenType.EOF]
-    | TokenType.DPNDCALL => [BinaryCommand kind: TokenType.DPNDCALL alias: tok literal]
-    | TokenType.CREATELABEL => [BinaryCommand kind: TokenType.CREATELABEL alias: tok literal]
-    | TokenType.JUMPLABEL => [BinaryCommand kind: TokenType.JUMPLABEL alias: tok literal]
+    | TokenType.DPNDCALL => [
+        this readToken
+        BinaryCommand kind: TokenType.DPNDCALL alias: tok literal
+    ]
+    | TokenType.CREATELABEL => [
+        this readToken
+        BinaryCommand kind: TokenType.CREATELABEL alias: tok literal
+    ]
+    | TokenType.JUMPLABEL => [
+        this readToken
+        BinaryCommand kind: TokenType.JUMPLABEL alias: tok literal
+    ]
     | TokenType.COMMENTB => [UnaryCommand kind: TokenType.INVALID]
     | TokenType.COMMENTE => [UnaryCommand kind: TokenType.INVALID]
-    | TokenType.DELETELABEL => [BinaryCommand kind: TokenType.DELETELABEL alias: tok literal]
+    | TokenType.DELETELABEL => [
+        this readToken
+        BinaryCommand kind: TokenType.DELETELABEL alias: tok literal
+    ]
     
 
     ^cmd 
