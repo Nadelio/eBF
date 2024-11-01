@@ -155,10 +155,31 @@ Interpreter nextCommand -> Result! = [
             token: pos
     ]
     | BinaryCommand => [
-        Error throwWithMessage: "TODO"
+        | cmd kind
+        | TokenType.CREATELABEL => [
+            labelMap at: cmd alias put: pointerPosition 
+            Success value: true
+        ]
+        | TokenType.JUMPLABEL => [
+            pointerPosition <- labelMap at: cmd alias |> unpackOrError
+            Success value: true
+        ]
+        | TokenType.DELETELABEL => [
+            labelMap remove: cmd alias
+            Success value: true
+        ]
+        | TokenType.DPNDCALL => [
+            dpnd = dpndMap at: cmd alias |> unpackOrError
+            dpnd runDependency //TODO: write read and run file dependency (only support ebf files, throw error otherwise)
+        ]
+        |=> InvalidCommand 
+            context: cmd kind toString 
+            loc: (Location token: pos)
+            token: pos
     ]
     | DPND => [
-        Error throwWithMessage: "TODO"
+        dpndMap at: cmd alias put: cmd file
+        Success value: true
     ]
 
     .readCommand
