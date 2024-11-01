@@ -123,9 +123,9 @@ Interpreter nextCommand -> Result! = [
             (tape at: pointerPosition) == 0 => [
                 this readCommand
                 [c > 0 || (cmd kind != TokenType.LOOPE)] whileTrue: [
-                    cmd kind == TokenType.DPND => LoopedDependencySet context: cmd kind toString loc: (Location token: pos)
-                    cmd kind == TokenType.LOOPB => c inc
-                    cmd kind == TokenType.LOOPE => c dec
+                    cmd kind == TokenType.DPND => [LoopedDependencySet context: cmd kind toString loc: (Location token: pos)]
+                    cmd kind == TokenType.LOOPB => [c <- c inc]
+                    cmd kind == TokenType.LOOPE => [c <- c dec]
                     this readCommand
                 ]
             ]
@@ -135,9 +135,9 @@ Interpreter nextCommand -> Result! = [
             (tape at: pointerPosition) != 0 => [
                 this readLastCommand
                 [c > 0 || (cmd kind != TokenType.LOOPB)] whileTrue: [
-                    cmd kind == TokenType.DPND => LoopedDependencySet context: cmd kind toString loc: (Location token: pos)
-                    cmd kind == TokenType.LOOPE => c inc
-                    cmd kind == TokenType.LOOPB => c dec
+                    cmd kind == TokenType.DPND => [LoopedDependencySet context: cmd kind toString loc: (Location token: pos)]
+                    cmd kind == TokenType.LOOPE => [c <- c inc]
+                    cmd kind == TokenType.LOOPB => [c <- c dec]
                     this readLastCommand
                 ]
             ]
