@@ -1,5 +1,0 @@
-extend String[
-    on append::String -> String = [
-        ^this + append
-    ]
-]

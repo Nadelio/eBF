@@ -1,4 +1,4 @@
-Bind package: "System.in" content: [
+Bind package: "java.io" content: [
     type Console
     @emit: "System.`in`.read()"
     constructor Console readChar -> Int

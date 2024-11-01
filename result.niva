@@ -1,7 +1,7 @@
 union Result =
-    | Success x: Boolean
+    | Success value: Boolean
     | NonExistentLabel context: String loc: Location
-    | InvalidCommand context: String loc: Location
+    | InvalidCommand context: String loc: Location token: Int
     | NonExistentDependency context: String loc: Location
 
 type Location

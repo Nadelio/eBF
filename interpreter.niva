@@ -12,7 +12,9 @@ type Interpreter
 
 constructor Interpreter ast::ASTC = [
     cmd = UnaryCommand kind: TokenType.INVALID
-    tape = MutableList::Int buildTape
+    tape::MutableList::Int = 0..65535 |> toMutableList
+    stack::MutableList::Int = {}
+
     i = Interpreter
             ast: ast
             cmd: cmd
@@ -23,13 +25,11 @@ constructor Interpreter ast::ASTC = [
             pointerValue: 0
             pointerPosition: 0
             tape: tape
-            stack: MutableList::Int {}
-    
+            stack: stack
+
     i readCommand
     ^i
 ]
-
-MutableList::Int buildTape = [0..255 forEach: [0..255 forEach: [this add: 0]]]
 
 Interpreter readCommand = [
     readPos >= ast commands count =>
@@ -46,12 +46,31 @@ Interpreter peekCommand -> Command = [
     ast commands at: (.readPos)
 ]
 
+Interpreter readLastCommand = [
+    readPos >= 0 =>
+        cmd <- UnaryCommand kind: TokenType.EOF |=> 
+        cmd <- ast commands at: readPos dec
+
+    pos <- readPos
+    readPos <- readPos dec
+]
+
+Interpreter peekLastCommand -> Command = [
+    ^this readPos >= 0 =>
+    UnaryCommand kind: TokenType.EOF |=>
+    ast commands at: (.readPos dec)
+]
 
 
-Interpreter nextCommand -> Result = [
+
+Interpreter nextCommand -> Result! = [
+    // for loops, DO NOT TOUCH
+    mut c = 0
+
+    cmd = cmd
     result = | cmd
     //TODO: switch based on Unary, Binary, and DPND command types, then switch on the TokenType, throw relevant errors
-    | Unary => [
+    | UnaryCommand => [
         | cmd kind
         | TokenType.INC => [
             pointerValue <- pointerValue inc
@@ -82,11 +101,11 @@ Interpreter nextCommand -> Result = [
             Success value: true
         ]
         | TokenType.IN => [
-            pointerValue <- Console readChar toInt
+            pointerValue <- Console readChar
             Success value: true
         ]
         | TokenType.OUT => [
-            Console writeChar: tape at: pointerPosition
+            (tape at: pointerPosition) toChar echo
             Success value: true
         ]
         | TokenType.READ => [
@@ -94,21 +113,45 @@ Interpreter nextCommand -> Result = [
             Success value: true
         ]
         | TokenType.WRITE => [
-            tape set: pointerPosition value: pointerValue
+            tape at: pointerPosition put: pointerValue
             Success value: true
         ]
         | TokenType.READPOS => [
             pointerValue <- pointerPosition
             Success value: true
         ]
-
-        |=> [InvalidCommand context: cmd kind loc: Location token: pos]
+        | TokenType.LOOPB => [
+            tape at: pointerPosition == 0 => [
+                this readCommand
+                [c > 0 || (cmd kind != TokenType.LOOPE)] whileTrue: [
+                    cmd kind == TokenType.LOOPB => c inc |
+                    cmd kind == TokenType.LOOPE => c dec
+                    this readCommand
+                ]
+            ]
+            Success value: true
+        ]
+        | TokenType.LOOPE => [
+            tape at: pointerPosition != 0 => [
+                this readLastCommand
+                [c > 0 || (cmd kind != TokenType.LOOPB)] whileTrue: [
+                    cmd kind == TokenType.LOOPE => c inc |
+                    cmd kind == TokenType.LOOPB => c dec
+                    this readLastCommand
+                ]
+            ]
+            Success value: true
+        ]
+        |=> InvalidCommand 
+            context: cmd kind toString 
+            loc: (Location token: pos)
+            token: pos
     ]
-    | Binary => [
-
+    | BinaryCommand => [
+        Error throwWithMessage: "TODO"
     ]
     | DPND => [
-
+        Error throwWithMessage: "TODO"
     ]
 
     ^result
