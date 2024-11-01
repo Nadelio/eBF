@@ -64,12 +64,11 @@ Interpreter peekLastCommand -> Command = [
 
 
 Interpreter nextCommand -> Result! = [
-    // for loops, DO NOT TOUCH
+    //! for loops, DO NOT TOUCH
     mut c = 0
 
     cmd = cmd
     result = | cmd
-    //TODO: switch based on Unary, Binary, and DPND command types, then switch on the TokenType, throw relevant errors
     | UnaryCommand => [
         | cmd kind
         | TokenType.INC => [
@@ -121,10 +120,11 @@ Interpreter nextCommand -> Result! = [
             Success value: true
         ]
         | TokenType.LOOPB => [
-            tape at: pointerPosition == 0 => [
+            (tape at: pointerPosition) == 0 => [
                 this readCommand
                 [c > 0 || (cmd kind != TokenType.LOOPE)] whileTrue: [
-                    cmd kind == TokenType.LOOPB => c inc |
+                    cmd kind == TokenType.DPND => LoopedDependencySet context: cmd kind toString loc: (Location token: pos)
+                    cmd kind == TokenType.LOOPB => c inc
                     cmd kind == TokenType.LOOPE => c dec
                     this readCommand
                 ]
@@ -132,15 +132,22 @@ Interpreter nextCommand -> Result! = [
             Success value: true
         ]
         | TokenType.LOOPE => [
-            tape at: pointerPosition != 0 => [
+            (tape at: pointerPosition) != 0 => [
                 this readLastCommand
                 [c > 0 || (cmd kind != TokenType.LOOPB)] whileTrue: [
-                    cmd kind == TokenType.LOOPE => c inc |
+                    cmd kind == TokenType.DPND => LoopedDependencySet context: cmd kind toString loc: (Location token: pos)
+                    cmd kind == TokenType.LOOPE => c inc
                     cmd kind == TokenType.LOOPB => c dec
                     this readLastCommand
                 ]
             ]
             Success value: true
+        ]
+        | TokenType.COMMENT => [
+            Success value: true
+        ]
+        | TokenType.END => [
+            EndOfProgram value: true
         ]
         |=> InvalidCommand 
             context: cmd kind toString 
@@ -154,5 +161,6 @@ Interpreter nextCommand -> Result! = [
         Error throwWithMessage: "TODO"
     ]
 
+    .readCommand
     ^result
 ]

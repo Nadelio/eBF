@@ -20,3 +20,7 @@ parser = Parser ast: ast
 ]
 
 astc print //debug
+
+interpreter = Interpreter ast: astc
+// run interpreter nextCommand until it returns EOP (End of Program) Result
+// if it returns an error, send Result to error handler and break loop

@@ -1,8 +1,10 @@
 union Result =
     | Success value: Boolean
+    | EndOfProgram value: Boolean
     | NonExistentLabel context: String loc: Location
     | InvalidCommand context: String loc: Location token: Int
     | NonExistentDependency context: String loc: Location
+    | LoopedDependencySet context: String loc: Location
 
 type Location
     token: Int
