@@ -1,0 +1,4 @@
+Bind package: "java.io" content: [
+  type File path: String
+  File readText -> String
+]

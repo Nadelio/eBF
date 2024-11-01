@@ -3,7 +3,7 @@ type Interpreter
     cmd: Command
     pos: Int
     readPos: Int
-    dpndMap: MutableMap(String, String)
+    dpndMap: MutableMap(String, String) //TODO: rewrite to use java.io.File type
     labelMap: MutableMap(String, Int)
     pointerValue: Int
     pointerPosition: Int
@@ -20,7 +20,7 @@ constructor Interpreter ast::ASTC = [
             cmd: cmd
             pos: 0
             readPos: 0
-            dpndMap: #{}
+            dpndMap: #{} //TODO: rewrite to use java.io.File type
             labelMap: #{}
             pointerValue: 0
             pointerPosition: 0
@@ -169,7 +169,7 @@ Interpreter nextCommand -> Result! = [
             Success value: true
         ]
         | TokenType.DPNDCALL => [
-            dpnd = dpndMap at: cmd alias |> unpackOrError
+            dpnd = dpndMap at: cmd alias |> unpackOrError //TODO: rewrite to use java.io.File type
             dpnd runDependency //TODO: write read and run file dependency (only support ebf files, throw error otherwise)
         ]
         |=> InvalidCommand 
