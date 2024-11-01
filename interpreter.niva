@@ -1,0 +1,115 @@
+type Interpreter
+    ast: ASTC
+    cmd: Command
+    pos: Int
+    readPos: Int
+    dpndMap: MutableMap(String, String)
+    labelMap: MutableMap(String, Int)
+    pointerValue: Int
+    pointerPosition: Int
+    tape: MutableList::Int
+    stack: MutableList::Int
+
+constructor Interpreter ast::ASTC = [
+    cmd = UnaryCommand kind: TokenType.INVALID
+    tape = MutableList::Int buildTape
+    i = Interpreter
+            ast: ast
+            cmd: cmd
+            pos: 0
+            readPos: 0
+            dpndMap: #{}
+            labelMap: #{}
+            pointerValue: 0
+            pointerPosition: 0
+            tape: tape
+            stack: MutableList::Int {}
+    
+    i readCommand
+    ^i
+]
+
+MutableList::Int buildTape = [0..255 forEach: [0..255 forEach: [this add: 0]]]
+
+Interpreter readCommand = [
+    readPos >= ast commands count =>
+        cmd <- UnaryCommand kind: TokenType.EOF |=> 
+        cmd <- ast commands at: readPos
+
+    pos <- readPos
+    readPos <- readPos inc
+]
+
+Interpreter peekCommand -> Command = [
+    ^this readPos >= ast commands count =>
+    UnaryCommand kind: TokenType.EOF |=>
+    ast commands at: (.readPos)
+]
+
+
+
+Interpreter nextCommand -> Result = [
+    result = | cmd
+    //TODO: switch based on Unary, Binary, and DPND command types, then switch on the TokenType, throw relevant errors
+    | Unary => [
+        | cmd kind
+        | TokenType.INC => [
+            pointerValue <- pointerValue inc
+            Success value: true
+        ]
+        | TokenType.DEC => [
+            pointerValue <- pointerValue dec
+            Success value: true
+        ]
+        | TokenType.MOVR => [
+            pointerPosition <- pointerPosition inc
+            pointerPosition >= tape count => pointerPosition <- 0
+            Success value: true
+        ]
+        | TokenType.MOVL => [
+            pointerPosition <- pointerPosition dec
+            pointerPosition < 0 => pointerPosition <- tape count - 1
+            Success value: true
+        ]
+        | TokenType.PUSH => [
+            stack add: pointerValue
+            pointerValue <- 0
+            Success value: true
+        ]
+        | TokenType.POP => [
+            pointerValue <- stack last
+            stack removeAt: stack count - 1
+            Success value: true
+        ]
+        | TokenType.IN => [
+            pointerValue <- Console readChar toInt
+            Success value: true
+        ]
+        | TokenType.OUT => [
+            Console writeChar: tape at: pointerPosition
+            Success value: true
+        ]
+        | TokenType.READ => [
+            pointerValue <- tape at: pointerPosition
+            Success value: true
+        ]
+        | TokenType.WRITE => [
+            tape set: pointerPosition value: pointerValue
+            Success value: true
+        ]
+        | TokenType.READPOS => [
+            pointerValue <- pointerPosition
+            Success value: true
+        ]
+
+        |=> [InvalidCommand context: cmd kind loc: Location token: pos]
+    ]
+    | Binary => [
+
+    ]
+    | DPND => [
+
+    ]
+
+    ^result
+]

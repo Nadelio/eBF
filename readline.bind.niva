@@ -1,0 +1,5 @@
+Bind package: "System.in" content: [
+    type Console
+    @emit: "System.`in`.read()"
+    constructor Console readChar -> Int
+]

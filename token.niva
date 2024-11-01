@@ -30,6 +30,7 @@ enum TokenType v: String =
     | CREATELABEL v: "#"
     | DELETELABEL v: "!#"
     | JUMPLABEL v: "@"
+    | COMMENT v: "COMMENT"
     | COMMENTB v: "/*"
     | COMMENTE v: "*/"
     | FILE v: "."

@@ -26,22 +26,7 @@ Parser peekToken -> Token = [
     ast tokens at: (.readPos)
 ]
 
-Parser expect::TokenType -> Boolean = [
-    tok = this peekToken
-    tok kind != expect => [
-        tok kind == TokenType.EOF => [
-            "Expected: " + expect v + ", but got EOF," |> echo
-            ^false
-        ] |=> [
-            "Expected: " + expect v + ", but got " + tok kind toString + "." |> echo
-            ^false
-        ]
-    ]
-    this readToken
-    ^true
-]
-
-Parser nextToken -> Command = [ //TODO: Refactor to use Command union
+Parser nextToken -> Command = [
     cmd = | tok kind
     | TokenType.INC => [UnaryCommand kind: TokenType.INC]
     | TokenType.DEC => [UnaryCommand kind: TokenType.DEC]
@@ -56,6 +41,9 @@ Parser nextToken -> Command = [ //TODO: Refactor to use Command union
     | TokenType.WRITE => [UnaryCommand kind: TokenType.WRITE]
     | TokenType.LOOPB => [UnaryCommand kind: TokenType.LOOPB]
     | TokenType.LOOPE => [UnaryCommand kind: TokenType.LOOPE]
+    | TokenType.INVALID => [UnaryCommand kind: TokenType.INVALID]
+    | TokenType.END => [UnaryCommand kind: TokenType.END]
+    | TokenType.EOF => [UnaryCommand kind: TokenType.EOF]
     | TokenType.DPND => [
         mut fileName = ""
         this peekToken kind == TokenType.ALIAS => [
@@ -75,9 +63,6 @@ Parser nextToken -> Command = [ //TODO: Refactor to use Command union
             ] |=> UnaryCommand kind: TokenType.INVALID
         ] |=> UnaryCommand kind: TokenType.INVALID
     ]
-    | TokenType.INVALID => [UnaryCommand kind: TokenType.INVALID]
-    | TokenType.END => [UnaryCommand kind: TokenType.END]
-    | TokenType.EOF => [UnaryCommand kind: TokenType.EOF]
     | TokenType.DPNDCALL => [
         this readToken
         BinaryCommand kind: TokenType.DPNDCALL alias: tok literal
@@ -90,14 +75,20 @@ Parser nextToken -> Command = [ //TODO: Refactor to use Command union
         this readToken
         BinaryCommand kind: TokenType.JUMPLABEL alias: tok literal
     ]
-    | TokenType.COMMENTB => [UnaryCommand kind: TokenType.INVALID]
-    | TokenType.COMMENTE => [UnaryCommand kind: TokenType.INVALID]
+    | TokenType.COMMENTB => [
+        mut peekedTok = this peekToken
+        [peekedTok kind != TokenType.COMMENTE || (pos >= ast tokens count)] whileTrue: [
+            this readToken
+            peekedTok <- this peekToken
+        ]
+        UnaryCommand kind: TokenType.COMMENT
+    ]
     | TokenType.DELETELABEL => [
         this readToken
         BinaryCommand kind: TokenType.DELETELABEL alias: tok literal
     ]
-    
+    |=> UnaryCommand kind: TokenType.INVALID
 
+    .readToken
     ^cmd 
 ]
-

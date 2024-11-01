@@ -1,4 +1,8 @@
-lexer = Lexer input: "++++ > < << >> /*some comment*/ DPND somefile.ebf foo % foo # bar\n@bar\r!#bar\tEND"
+testString::String = "++++ > < << >> /*some comment*/ DPND somefile.ebf foo % foo # bar\n@bar\r!#bar\tEND"
+
+("Test String: " + testString) echo
+
+lexer = Lexer input: testString
 
 ast = AST empty
 [lexer ch != '\u0000'] whileTrue: [
@@ -14,3 +18,5 @@ parser = Parser ast: ast
     command = parser nextToken
     astc append: command
 ]
+
+astc print //debug

@@ -1,0 +1,8 @@
+union Result =
+    | Success x: Boolean
+    | NonExistentLabel context: String loc: Location
+    | InvalidCommand context: String loc: Location
+    | NonExistentDependency context: String loc: Location
+
+type Location
+    token: Int
