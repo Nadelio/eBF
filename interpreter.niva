@@ -3,7 +3,7 @@ type Interpreter
     cmd: Command
     pos: Int
     readPos: Int
-    dpndMap: MutableMap(String, String) //TODO: rewrite to use java.io.File type
+    dpndMap: MutableMap(String, File)
     labelMap: MutableMap(String, Int)
     pointerValue: Int
     pointerPosition: Int
@@ -20,7 +20,7 @@ constructor Interpreter ast::ASTC = [
             cmd: cmd
             pos: 0
             readPos: 0
-            dpndMap: #{} //TODO: rewrite to use java.io.File type
+            dpndMap: #{}
             labelMap: #{}
             pointerValue: 0
             pointerPosition: 0
@@ -61,7 +61,33 @@ Interpreter peekLastCommand -> Command = [
     ast commands at: (.readPos dec)
 ]
 
+File runDependency -> Result = [
+    lexer = Lexer input: (this readText)
+    ast = AST empty
+    [lexer ch != '\u0000'] whileTrue: [
+        tok = lexer nextToken
+        ast append: tok
+    ]
 
+    astc = ASTC empty
+    parser = Parser ast: ast
+    [parser tok kind != TokenType.END] whileTrue: [
+        command = parser nextToken
+        astc append: command
+    ]
+
+    interpreter = Interpreter ast: astc
+    eop = UnaryCommand kind: TokenType.END
+    [interpreter cmd kind != eop kind] whileTrue: [
+        suc = Success value: true
+        res = interpreter nextCommand
+        [res != suc] ifFalse: [
+            
+        ]
+    ]
+
+    ^ Success value: true
+]
 
 Interpreter nextCommand -> Result! = [
     //! for loops, DO NOT TOUCH
@@ -161,7 +187,7 @@ Interpreter nextCommand -> Result! = [
             Success value: true
         ]
         | TokenType.JUMPLABEL => [
-            pointerPosition <- labelMap at: cmd alias |> unpackOrError
+            pointerPosition <- (labelMap at: cmd alias) unpackOrPANIC
             Success value: true
         ]
         | TokenType.DELETELABEL => [
@@ -169,8 +195,8 @@ Interpreter nextCommand -> Result! = [
             Success value: true
         ]
         | TokenType.DPNDCALL => [
-            dpnd = dpndMap at: cmd alias |> unpackOrError //TODO: rewrite to use java.io.File type
-            dpnd runDependency //TODO: write read and run file dependency (only support ebf files, throw error otherwise)
+            dpnd = (dpndMap at: cmd alias) unpackOrPANIC
+            dpnd runDependency
         ]
         |=> InvalidCommand 
             context: cmd kind toString 
@@ -178,7 +204,7 @@ Interpreter nextCommand -> Result! = [
             token: pos
     ]
     | DPND => [
-        dpndMap at: cmd alias put: cmd file
+        dpndMap at: cmd alias put: (File path: cmd fileName)
         Success value: true
     ]
 
