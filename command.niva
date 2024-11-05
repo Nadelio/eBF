@@ -1,6 +1,4 @@
-union Command =
+union Command kind: TokenType =
     | DPND fileName: String alias: String // CREATEDPND
-    | UnaryCommand kind: TokenType // everything but DPND instructions and Label instructions
-    | BinaryCommand kind: TokenType alias: String // label instructions and DPNDCALL
-
-constructor Command file::String alias::String = DPND fileName: file alias: alias
+    | UnaryCommand // everything but DPND instructions and Label instructions
+    | BinaryCommand alias: String // label instructions and DPNDCALL

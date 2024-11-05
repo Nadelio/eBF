@@ -81,7 +81,7 @@ File runDependency -> Result = [
     [interpreter cmd kind != eop kind] whileTrue: [
         suc = Success value: true
         res = interpreter nextCommand
-        [res != suc] ifFalse: [
+        res != suc ifFalse: [
             
         ]
     ]

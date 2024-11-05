@@ -57,7 +57,7 @@ Parser nextToken -> Command = [
                     fileName <- fileName + tok literal
                     this peekToken kind == TokenType.ALIAS => [
                         this readToken
-                        DPND fileName: fileName alias: tok literal
+                        DPND fileName: fileName alias: tok literal kind: TokenType.DPND
                     ] |=> UnaryCommand kind: TokenType.INVALID
                 ] |=> UnaryCommand kind: TokenType.INVALID
             ] |=> UnaryCommand kind: TokenType.INVALID
