@@ -1,7 +1,7 @@
 type AST tokens: MutableList::Token
 
 constructor AST empty = [
-    AST tokens: {}
+    ^AST tokens: {}
 ]
 
 AST append::Token = tokens add: append
