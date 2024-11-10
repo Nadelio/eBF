@@ -93,10 +93,10 @@ Interpreter nextCommand -> Result! = [
     //! for loops, DO NOT TOUCH
     mut c = 0
 
-    cmd = cmd
-    result = | cmd
+    localCmd = cmd
+    result = | localCmd
     | UnaryCommand => [
-        | cmd kind
+        | localCmd kind
         | TokenType.INC => [
             pointerValue <- pointerValue inc
             Success value: true
@@ -176,26 +176,26 @@ Interpreter nextCommand -> Result! = [
             EndOfProgram value: true
         ]
         |=> InvalidCommand 
-            context: cmd kind toString 
+            context: localCmd kind toString 
             loc: (Location token: pos)
             token: pos
     ]
     | BinaryCommand => [
         | cmd kind
         | TokenType.CREATELABEL => [
-            labelMap at: cmd alias put: pointerPosition 
+            labelMap at: localCmd alias put: pointerPosition 
             Success value: true
         ]
         | TokenType.JUMPLABEL => [
-            pointerPosition <- (labelMap at: cmd alias) unpackOrPANIC
+            pointerPosition <- (labelMap at: localCmd alias) unpackOrPANIC
             Success value: true
         ]
         | TokenType.DELETELABEL => [
-            labelMap remove: cmd alias
+            labelMap remove: localCmd alias
             Success value: true
         ]
         | TokenType.DPNDCALL => [
-            dpnd = (dpndMap at: cmd alias) unpackOrPANIC
+            dpnd = (dpndMap at: localCmd alias) unpackOrPANIC
             dpnd runDependency
         ]
         |=> InvalidCommand 
@@ -204,7 +204,7 @@ Interpreter nextCommand -> Result! = [
             token: pos
     ]
     | DPND => [
-        dpndMap at: cmd alias put: (File path: cmd fileName)
+        dpndMap at: localCmd alias put: (File path: localCmd fileName)
         Success value: true
     ]
 

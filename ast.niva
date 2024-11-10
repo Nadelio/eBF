@@ -14,7 +14,7 @@ AST print = [
 type ASTC commands: MutableList::Command
 
 constructor ASTC empty = [
-    ASTC commands: {}
+    ^ASTC commands: {}
 ]
 
 ASTC append::Command = commands add: append
