@@ -1,0 +1,6 @@
+type ErrorHandler
+    name: String
+
+ErrorHandler handle::Result -> Unit = [
+    //TODO: Implement error handling
+]

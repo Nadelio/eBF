@@ -61,7 +61,7 @@ Interpreter peekLastCommand -> Command = [
     ast commands at: (.readPos dec)
 ]
 
-File runDependency -> Result!Error = [
+File runDependency -> Result = [
     lexer = Lexer input: (this readText)
     ast = AST empty
     [lexer ch != '\u0000'] whileTrue: [
@@ -79,11 +79,8 @@ File runDependency -> Result!Error = [
     interpreter = Interpreter ast: astc
     eop = UnaryCommand kind: TokenType.END
     [interpreter cmd kind != eop kind] whileTrue: [
-        suc = Success value: true
         res = interpreter nextCommand
-        res != suc ifFalse: [
-            Error throwWithMessage: "Interpreter failed to execute command" + (interpreter cmd toString)
-        ]
+        res isSuccess ifFalse: [^res]
     ]
 
     ^ Success value: true

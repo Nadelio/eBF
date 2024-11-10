@@ -8,3 +8,9 @@ union Result =
 
 type Location
     token: Int
+
+Result isSuccess -> Boolean = [
+    ^| Result
+     | Success => true
+     |=> false
+]
