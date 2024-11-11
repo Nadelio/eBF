@@ -100,10 +100,21 @@ Lexer nextToken -> Token = [
             ] |=> Token kind: TokenType.INVALID
         ] |=> Token kind: TokenType.INVALID
     ]
-    | '`' => [Token kind: TokenType.FILENAME]
     | '\u0000' => [Token kind: TokenType.EOF]
-    | '\\' => [
-        Token literal: ch toString kind: TokenType.ALIAS
+    | '`' => [
+        mut peekedChar = this peekChar
+        mut lit = ""
+        [peekedChar != '`' && (pos < input count)] whileTrue: [
+            this readChar
+            ch echo
+            lit <- lit + ch toString
+            lit echo
+            peekedChar <- this peekChar
+            pos echo
+        ]
+        pos echo
+        this readChar
+        ^ Token kind: TokenType.FILENAME literal: lit
     ]
     |=> [
         ch isLetter => [

@@ -4,9 +4,11 @@ mut debug::Boolean = false
 args count == 2 => [ flags <- args at: 0 ]
 flags == "-d" => [ debug <- true ]
 
-mut input::String = args isEmpty => [
-    Error throwWithMessage: "Please specify input file" 
-] |=> args at: 1
+mut input::String = | args count
+                    | 2 => [ args at: 1 ]
+                    | 1 => [ args at: 0 ]
+                    | 0 => [ Error throwWithMessage: "Please specify input file"  ]
+                    |=> [ Error throwWithMessage: "Too many arguments" ]
 
 file = File path: input
 input <- file readText

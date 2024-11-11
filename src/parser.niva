@@ -75,19 +75,9 @@ Parser nextToken -> Command = [
         this readToken
         BinaryCommand kind: TokenType.JUMPLABEL alias: tok literal
     ]
-    | TokenType.FILENAME => [ //! Parsing error here
-        mut peekedTok = this peekToken
-        mut filePath = ""
-        [peekedTok kind != TokenType.FILENAME && (pos >= ast tokens count)] whileTrue: [ //! never stops
-            this readToken
-            filePath <- filePath + tok literal
-            peekedTok <- this peekToken
-        ]
-        BinaryCommand kind: TokenType.FILENAME alias: filePath
-    ]
     | TokenType.COMMENTB => [
         mut peekedTok = this peekToken
-        [peekedTok kind != TokenType.COMMENTE || (pos >= ast tokens count)] whileTrue: [
+        [peekedTok kind != TokenType.COMMENTE && (pos < ast tokens count)] whileTrue: [
             this readToken
             peekedTok <- this peekToken
         ]
