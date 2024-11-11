@@ -1,5 +1,12 @@
-# eBF Documentation
+# Extended Brainfuck
+Extended Brainfuck (eBF for short) is, as the name suggests, an extended variant of Brainfuck, the infamous esolang.\
+eBF was built for development inside of the [ePU](https://github.com/Nadelio/ePU).\
+Kind of a crazy idea that it was built for use inside of a computer architecture.\
+I (Nadelio) have actually been using it for just that, development inside of the ePU computer architecture.\
+I started working on a simple [OS](https://github.com/Nadelio/ePU/tree/main/eBF%20External%20Programming/bin/OS), but (expectedly) haven't gotten very far.\
+As a remedy, I've built a second language, [Hades](https://github.com/Nadelio/Hades-Programming-Language), to be a more approachable version of eBF, and in turn be a easier language to program the OS in.
 
+## eBF Documentation
 ### Examples
 Hello World in eBF:
 ```cpp
