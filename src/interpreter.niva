@@ -11,7 +11,7 @@ type Interpreter
     stack: MutableList::Int
 
 constructor Interpreter ast::ASTC = [
-    cmd = UnaryCommand kind: TokenType.INVALID //! Niva bug here, not proper error
+    cmd = UnaryCommand kind: TokenType.INVALID
     tape::MutableList::Int = 0..65535 |> toMutableList
     stack::MutableList::Int = {}
 
