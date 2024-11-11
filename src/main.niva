@@ -1,4 +1,6 @@
-input::String = args at: 0
+input::String = args isEmpty => [
+    Error throwWithMessage: "please specify code arg" 
+] |=> args at: 0
 
 lexer = Lexer input: input
 
