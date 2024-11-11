@@ -1,4 +1,4 @@
-testString::String = "++++ > < << >> /*some comment*/ DPND somefile.ebf foo % foo # bar\n@bar\r!#bar\tEND"
+testString::String = "++++ > < >> << /*some comment*/ DPND somefile.ebf foo % foo # bar\n@bar\r!#bar\tEND"
 
 ("Test String: " + testString) echo
 
@@ -23,9 +23,8 @@ astc print //debug
 
 interpreter = Interpreter ast: astc
 errHandle = ErrorHandler name: "Interpreter"
-eop = UnaryCommand kind: TokenType.END
 error = false
-[interpreter cmd kind != eop kind || error != true] whileTrue: [
+[interpreter cmd kind != TokenType.EOF && error != true] whileTrue: [
     res = interpreter nextCommand
     isSuccess = res isSuccess
     isSuccess ifFalse: [
@@ -33,5 +32,3 @@ error = false
         error = true
     ]
 ]
-// run interpreter nextCommand until it returns EOP (End of Program) Result
-// if it returns an error, send Result to error handler and break loop

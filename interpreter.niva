@@ -77,13 +77,12 @@ File runDependency -> Result = [
     ]
 
     interpreter = Interpreter ast: astc
-    eop = UnaryCommand kind: TokenType.END
+    eop = UnaryCommand kind: TokenType.EOF
     [interpreter cmd kind != eop kind] whileTrue: [
         res = interpreter nextCommand
         res isSuccess ifFalse: [^res]
     ]
-
-    ^ Success value: true
+    ^Success value: true
 ]
 
 Interpreter nextCommand -> Result! = [
