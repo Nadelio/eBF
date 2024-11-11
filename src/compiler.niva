@@ -36,21 +36,6 @@ eCompiler peekCommand -> Command = [
     ast commands at: (.readPos)
 ]
 
-/*
-compiler = eCompiler ast: astc
-errHandle = ErrorHandler name: "Compiler"
-error = false
-[compiler cmd kind != TokenType.EOF && error != true] whileTrue: [
-    res = compiler nextCommand
-    debug => [ compiler cmd kind echo ]
-    isSuccess = res isSuccess
-    isSuccess ifFalse: [
-        errHandle handle: res
-        error = true
-    ]
-]
-*/
-
 eCompiler nextCommand -> Result! = [
     //TODO: compile command code
     ^ Success value: true
