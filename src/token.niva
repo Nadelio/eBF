@@ -34,3 +34,4 @@ enum TokenType v: String =
     | COMMENTB v: "/*"
     | COMMENTE v: "*/"
     | FILE v: "."
+    | FILENAME v: "`"

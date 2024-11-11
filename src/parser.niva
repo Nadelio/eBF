@@ -46,7 +46,7 @@ Parser nextToken -> Command = [
     | TokenType.EOF => [UnaryCommand kind: TokenType.EOF]
     | TokenType.DPND => [
         mut fileName = ""
-        this peekToken kind == TokenType.ALIAS => [
+        this peekToken kind == TokenType.FILENAME => [
             this readToken
             fileName <- fileName + tok literal
             this peekToken kind == TokenType.FILE => [
@@ -74,6 +74,16 @@ Parser nextToken -> Command = [
     | TokenType.JUMPLABEL => [
         this readToken
         BinaryCommand kind: TokenType.JUMPLABEL alias: tok literal
+    ]
+    | TokenType.FILENAME => [
+        mut peekedTok = this peekToken
+        mut filePath = ""
+        [peekedTok kind != TokenType.FILENAME || (pos >= ast tokens count)] whileTrue: [
+            this readToken
+            filePath <- filePath + tok literal
+            peekedTok <- this peekToken
+        ]
+        BinaryCommand kind: TokenType.FILENAME alias: filePath
     ]
     | TokenType.COMMENTB => [
         mut peekedTok = this peekToken

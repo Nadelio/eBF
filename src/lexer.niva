@@ -100,7 +100,11 @@ Lexer nextToken -> Token = [
             ] |=> Token kind: TokenType.INVALID
         ] |=> Token kind: TokenType.INVALID
     ]
+    | '`' => [Token kind: TokenType.FILENAME]
     | '\u0000' => [Token kind: TokenType.EOF]
+    | '\\' => [
+        Token literal: ch toString kind: TokenType.ALIAS
+    ]
     |=> [
         ch isLetter => [
             lit = this readIdentifier

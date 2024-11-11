@@ -1,11 +1,11 @@
-DPND .\..\bin\STD\zeroChar.ebf zero
-DPND .\..\bin\STD\Uppercase_A_Char.ebf A
-DPND .\..\bin\STD\Lowercase_A_Char.ebf a
-DPND .\..\bin\STD\add.ebf add
-DPND .\..\bin\STD\subtract.ebf sub
-DPND .\..\bin\STD\multiply.ebf multiply
-DPND .\..\bin\STD\divide.ebf divide
-DPND .\..\bin\STD\clear.ebf clear
-DPND .\..\bin\STD\popRAMValue.ebf popRAMValue
-DPND .\..\bin\STD\pushPointerValue.ebf pushPointerValue
+DPND `.\..\bin\STD\zeroChar`.ebf zero
+DPND `.\..\bin\STD\Uppercase_A_Char`.ebf A
+DPND `.\..\bin\STD\Lowercase_A_Char`.ebf a
+DPND `.\..\bin\STD\add`.ebf add
+DPND `.\..\bin\STD\subtract`.ebf sub
+DPND `.\..\bin\STD\multiply`.ebf multiply
+DPND `.\..\bin\STD\divide`.ebf divide
+DPND `.\..\bin\STD\clear`.ebf clear
+DPND `.\..\bin\STD\popRAMValue`.ebf popRAMValue
+DPND `.\..\bin\STD\pushPointerValue`.ebf pushPointerValue
 END

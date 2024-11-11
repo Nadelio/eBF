@@ -1,27 +1,45 @@
-input::String = args isEmpty => [
-    Error throwWithMessage: "please specify file" 
-] |=> args at: 0
+mut flags::String = ""
+mut debug::Boolean = false
 
+args count == 2 => [ flags <- args at: 0 ]
+flags == "-d" => [ debug = true ]
+
+mut input::String = args isEmpty => [
+    Error throwWithMessage: "Please specify input file" 
+] |=> args at: 1
+
+file = File path: input
+input <- file readText
+
+debug => [ "debug mode enabled" echo ]
+
+"Starting lexer" echo
 lexer = Lexer input: input
-
 ast = AST empty
 [lexer ch != '\u0000'] whileTrue: [
     tok = lexer nextToken
+    debug => [ tok kind echo ]
     ast append: tok
 ]
+debug => [ ast print ]
 
+"Starting parser" echo
 astc = ASTC empty
 parser = Parser ast: ast
 [parser tok kind != TokenType.END] whileTrue: [
     command = parser nextToken
+    debug => [ command kind echo ]
     astc append: command
 ]
+debug => [ astc print ]
 
+"Starting interpreter" echo
 interpreter = Interpreter ast: astc
 errHandle = ErrorHandler name: "Interpreter"
 error = false
 [interpreter cmd kind != TokenType.EOF && error != true] whileTrue: [
     res = interpreter nextCommand
+    debug => [ interpreter cmd kind echo ]
     isSuccess = res isSuccess
     isSuccess ifFalse: [
         errHandle handle: res
