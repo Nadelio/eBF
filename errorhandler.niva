@@ -2,5 +2,22 @@ type ErrorHandler
     name: String
 
 ErrorHandler handle::Result -> Unit = [
-    //TODO: Implement error handling
+    | handle
+        | NonExistentLabel => [
+            msg = "Error: Non-existent label | Location: " + handle loc token toString + " | Context: " + handle context toString + "\n"
+            msg echo
+        ]
+        | InvalidCommand => [
+            msg = "Error: Invalid command | Location: " + handle loc token toString + " | Context: " + handle context toString + "\n"
+            msg echo
+        ]
+        | NonExistentDependency => [
+            msg = "Error: Non-existent dependency | Location: " + handle loc token toString + " | Context: " + handle context toString + "\n"
+            msg echo
+        ]
+        | LoopedDependencySet => [
+            msg = "Error: Looped dependency set | Location: " + handle loc token toString + " | Context: " + handle context toString + "\n"
+            msg echo
+        ]
+        |=> []
 ]
