@@ -78,7 +78,7 @@ Parser nextToken -> Command = [
     | TokenType.FILENAME => [ //! Parsing error here
         mut peekedTok = this peekToken
         mut filePath = ""
-        [peekedTok kind != TokenType.FILENAME || (pos >= ast tokens count)] whileTrue: [ //! never stops
+        [peekedTok kind != TokenType.FILENAME && (pos >= ast tokens count)] whileTrue: [ //! never stops
             this readToken
             filePath <- filePath + tok literal
             peekedTok <- this peekToken
