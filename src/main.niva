@@ -2,7 +2,7 @@ mut flags::String = ""
 mut debug::Boolean = false
 
 args count == 2 => [ flags <- args at: 0 ]
-flags == "-d" => [ debug = true ]
+flags == "-d" => [ debug <- true ]
 
 mut input::String = args isEmpty => [
     Error throwWithMessage: "Please specify input file" 
