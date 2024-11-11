@@ -1,8 +1,6 @@
-testString::String = "++++ > < >> << /*some comment*/ DPND somefile.ebf foo % foo # bar\n@bar\r!#bar\tEND"
+input::String = args at: 0
 
-("Test String: " + testString) echo
-
-lexer = Lexer input: testString
+lexer = Lexer input: input
 
 ast = AST empty
 [lexer ch != '\u0000'] whileTrue: [
@@ -10,16 +8,12 @@ ast = AST empty
     ast append: tok
 ]
 
-ast print // debug
-
 astc = ASTC empty
 parser = Parser ast: ast
 [parser tok kind != TokenType.END] whileTrue: [
     command = parser nextToken
     astc append: command
 ]
-
-astc print //debug
 
 interpreter = Interpreter ast: astc
 errHandle = ErrorHandler name: "Interpreter"
