@@ -106,20 +106,16 @@ Lexer nextToken -> Token = [
         mut lit = ""
         [peekedChar != '`' && (pos < input count)] whileTrue: [
             this readChar
-            ch echo
             lit <- lit + ch toString
-            lit echo
             peekedChar <- this peekChar
-            pos echo
         ]
-        pos echo
         this readChar
-        ^ Token kind: TokenType.FILENAME literal: lit
+        Token kind: TokenType.FILENAME literal: lit
     ]
     |=> [
         ch isLetter => [
             lit = this readIdentifier
-            ^ Token literal: lit kind: TokenType.ALIAS
+            Token literal: lit kind: TokenType.ALIAS
         ] |=> [Token kind: TokenType.INVALID]
     ]
 

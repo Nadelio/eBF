@@ -28,7 +28,7 @@ debug => [ ast print ]
 "Starting parser" echo
 astc = ASTC empty
 parser = Parser ast: ast
-[parser tok kind != TokenType.END] whileTrue: [
+[parser tok kind != TokenType.EOF] whileTrue: [
     command = parser nextToken
     debug => [ command kind echo ]
     astc append: command

@@ -1,5 +1,5 @@
-DPND .\..\bin\STD\add.ebf add
-DPND .\..\bin\STD\popRAMValue.ebf popRAMV
+DPND `.\..\bin\STD\add`.ebf add
+DPND `.\..\bin\STD\popRAMValue`.ebf popRAMV
 << , > >
 << , <
 << , > > , <
