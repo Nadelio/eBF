@@ -1,0 +1,10 @@
+type Assert
+
+constructor Assert that::Any equals::Any -> Unit! = [
+  a = Compiler getName: 1
+  b = Compiler getName: 2
+
+  that != equals => [
+    Error throwWithMessage: "Assertion failed: $a' != $b' ($that != $equals)"
+  ]
+]

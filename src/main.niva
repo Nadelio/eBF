@@ -1,5 +1,5 @@
 flags::String = args count == 2 => args at: 0 |=> ""
-debug::Boolean = flags == "-d"
+isDebug::Boolean = flags == "-d"
 
 mut input::String = | args count
                     | 2 => [ args at: 1 ]
@@ -10,27 +10,27 @@ mut input::String = | args count
 file = File path: input
 input <- file readText
 
-debug => [ "debug mode enabled" echo ]
+isDebug => "debug mode enabled" echo 
 
 "Starting lexer" echo
 lexer = Lexer input: input
 ast = AST empty
 [lexer ch != '\u0000'] whileTrue: [
     tok = lexer nextToken
-    debug => [ tok kind echo ]
+    isDebug => [ tok kind echo ]
     ast append: tok
 ]
-debug => [ ast print ]
+isDebug => [ ast print ]
 
 "Starting parser" echo
 astc = ASTC empty
 parser = Parser ast: ast
 [parser tok kind != TokenType.EOF] whileTrue: [
     command = parser nextToken
-    debug => [ command kind echo ]
+    isDebug => [ command kind echo ]
     astc append: command
 ]
-debug => [ astc print ]
+isDebug => [ astc print ]
 
 "Starting interpreter" echo
 interpreter = Interpreter ast: astc
@@ -38,7 +38,7 @@ errHandle = ErrorHandler name: "Interpreter"
 error = false
 [interpreter cmd kind != TokenType.EOF && error != true] whileTrue: [
     res = interpreter nextCommand
-    debug => [ interpreter cmd kind echo ]
+    isDebug => [ interpreter cmd kind echo ]
     isSuccess = res isSuccess
     isSuccess ifFalse: [
         errHandle handle: res
@@ -53,7 +53,7 @@ error = false
 // error = false
 // [compiler cmd kind != TokenType.EOF && error != true] whileTrue: [
 //     res = compiler nextCommand
-//     debug => [ compiler cmd kind echo ]
+//     isDebug => [ compiler cmd kind echo ]
 //     isSuccess = res isSuccess
 //     isSuccess ifFalse: [
 //         errHandle handle: res
