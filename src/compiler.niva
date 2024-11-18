@@ -7,20 +7,20 @@ type ECompiler
     dpndMap: MutableMap(String, Int)
     labelMap: MutableMap(String, Int)
     bytecode = 0..25 |> toList // 20 and 21 are unused
-    bytecodeLabels = {'F', 'L', 'N', 'C'}
+    bytecodeLabels = {'F' 'L' 'N' 'C'}
 
 ECompiler readCommand = [
-    readPos >= ast commands count =>
-        cmd <- UnaryCommand kind: TokenType.EOF |=> 
-        cmd <- ast commands at: readPos
+    cmd <- readPos >= ast commands count 
+        ifTrue: [UnaryCommand kind: TokenType.EOF]
+        ifFalse: [ast commands at: readPos]
     pos <- readPos
     readPos <- readPos inc
 ]
 
 ECompiler peekCommand -> Command = [
-    ^this readPos >= ast commands count =>
-    UnaryCommand kind: TokenType.EOF |=>
-    ast commands at: (.readPos)
+    ^this readPos >= ast commands count 
+        ifTrue: [UnaryCommand kind: TokenType.EOF]
+        ifFalse: [ast commands at: (.readPos)]
 ]
 
 ECompiler nextCommand -> Result! = [

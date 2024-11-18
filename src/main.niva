@@ -1,11 +1,11 @@
 flags::String = args count == 2 => args at: 0 |=> ""
 isDebug::Boolean = flags == "-d"
 
-mut input::String = | args count
-                    | 2 => [ args at: 1 ]
-                    | 1 => [ args at: 0 ]
-                    | 0 => [ Error throwWithMessage: "Please specify input file"  ]
-                    |=> [ Error throwWithMessage: "Too many arguments" ]
+mut input = | args count
+            | 2 => args at: 1 
+            | 1 => args at: 0 
+            | 0 => Error throwWithMessage: "Please specify input file" 
+            |=> Error throwWithMessage: "Too many arguments" 
 
 file = File path: input
 input <- file readText
@@ -35,14 +35,13 @@ isDebug => [ astc print ]
 "Starting interpreter" echo
 interpreter = Interpreter ast: astc
 errHandle = ErrorHandler name: "Interpreter"
-error = false
+mut error = false
 [interpreter cmd kind != TokenType.EOF && error != true] whileTrue: [
     res = interpreter nextCommand
     isDebug => [ interpreter cmd kind echo ]
-    isSuccess = res isSuccess
-    isSuccess ifFalse: [
+    res isSuccess ifFalse: [
         errHandle handle: res
-        error = true
+        error <- true
     ]
 ]
 
