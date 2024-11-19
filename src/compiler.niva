@@ -1,5 +1,5 @@
 // https://github.com/Nadelio/eBin-Bytecode
-type eCompiler
+type ECompiler
     ast: ASTC
     cmd: Command
     pos: Int
@@ -7,36 +7,23 @@ type eCompiler
     dpndMap: MutableMap(String, Int)
     labelMap: MutableMap(String, Int)
     bytecode = 0..25 |> toList // 20 and 21 are unused
-    bytecodeLabels = {'F', 'L', 'N', 'C'}
+    bytecodeLabels = {'F' 'L' 'N' 'C'}
 
-constructor Compiler ast::ASTC = [
-    cmd = UnaryCommand kind: TokenType.INVALID
-    c = eCompiler
-            ast: ast
-            cmd: cmd
-            pos: 0
-            readPos: 0
-            dpndMap: #{}
-            labelMap: #{}
-    c readCommand
-    ^c
-]
-
-eCompiler readCommand = [
-    readPos >= ast commands count =>
-        cmd <- UnaryCommand kind: TokenType.EOF |=> 
-        cmd <- ast commands at: readPos
+ECompiler readCommand = [
+    cmd <- readPos >= ast commands count 
+        ifTrue: [UnaryCommand kind: TokenType.EOF]
+        ifFalse: [ast commands at: readPos]
     pos <- readPos
     readPos <- readPos inc
 ]
 
-eCompiler peekCommand -> Command = [
-    ^this readPos >= ast commands count =>
-    UnaryCommand kind: TokenType.EOF |=>
-    ast commands at: (.readPos)
+ECompiler peekCommand -> Command = [
+    ^this readPos >= ast commands count 
+        ifTrue: [UnaryCommand kind: TokenType.EOF]
+        ifFalse: [ast commands at: (.readPos)]
 ]
 
-eCompiler nextCommand -> Result! = [
+ECompiler nextCommand -> Result! = [
     //TODO: compile command code
     ^ Success value: true
 ]

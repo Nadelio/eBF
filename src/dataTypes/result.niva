@@ -10,7 +10,7 @@ type Location
     token: Int
 
 Result isSuccess -> Boolean = [
-    ^| this
+^| this
      | Success => true
      |=> false
 ]

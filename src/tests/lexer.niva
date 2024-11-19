@@ -1,0 +1,99 @@
+// niva test
+Test stdAdd -> Unit! = [
+    expected = {
+        TokenType.POP
+        TokenType.WRITE
+        TokenType.MOVR
+        TokenType.POP
+        TokenType.WRITE
+        TokenType.LOOPB
+        TokenType.MOVL
+        TokenType.READ
+        TokenType.INC
+        TokenType.WRITE
+        TokenType.MOVR
+        TokenType.READ
+        TokenType.DEC
+        TokenType.WRITE
+        TokenType.LOOPE
+        TokenType.MOVL
+        TokenType.READ
+        TokenType.END
+    }
+
+    lexer = Lexer input: "<< , > << , [ < ' + , > ' - , ] < ' END"
+    mut i = 0
+    [lexer ch != '\u0000'] whileTrue: [
+        tok = lexer nextToken
+        Assert that: tok kind equals: (expected at: i)
+        i <- i inc
+    ]
+]
+
+Test stdDivide -> Unit! = [
+    data = """
+        > << ,
+        < >> ,
+        > ' > , < <
+        [
+        [ > ' - , < ' - , ]
+        > > > ' + , < < <
+        ]
+        ' > > , > '
+        END
+    """
+
+    expected = {
+        TokenType.MOVR
+        TokenType.POP
+        TokenType.WRITE
+        TokenType.MOVL
+        TokenType.PUSH
+        TokenType.WRITE
+        TokenType.MOVR
+        TokenType.READ
+        TokenType.MOVR
+        TokenType.WRITE
+        TokenType.MOVL
+        TokenType.MOVL
+        TokenType.LOOPB
+        TokenType.LOOPB
+        TokenType.MOVR
+        TokenType.READ
+        TokenType.DEC
+        TokenType.WRITE
+        TokenType.MOVL
+        TokenType.READ
+        TokenType.DEC
+        TokenType.WRITE
+        TokenType.LOOPE
+        TokenType.MOVR
+        TokenType.MOVR
+        TokenType.MOVR
+        TokenType.READ
+        TokenType.INC
+        TokenType.WRITE
+        TokenType.MOVL
+        TokenType.MOVL
+        TokenType.MOVL
+        TokenType.LOOPE
+        TokenType.READ
+        TokenType.MOVR
+        TokenType.MOVR
+        TokenType.WRITE
+        TokenType.MOVR
+        TokenType.READ
+        TokenType.END
+        TokenType.EOF
+    }
+
+    lexer = Lexer input: data
+    mut i = 0
+    [lexer ch != '\u0000'] whileTrue: [
+        tok = lexer nextToken
+        // "TokenType." + tok kind toString |> echo
+        Assert that: tok kind equals: (expected at: i)
+        i <- i inc
+    ]
+
+]

@@ -22,8 +22,8 @@ Parser readToken = [
 
 Parser peekToken -> Token = [
     ^this readPos >= ast tokens count =>
-    Token kind: TokenType.EOF |=>
-    ast tokens at: (.readPos)
+        Token kind: TokenType.EOF |=>
+        ast tokens at: (.readPos)
 ]
 
 Parser nextToken -> Command = [
