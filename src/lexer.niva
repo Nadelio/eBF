@@ -5,14 +5,14 @@ type Lexer
     ch: Char
 
 constructor Lexer input::String = [
-    l = Lexer input: input pos: 0 readPos: 0 ch: '0'
+    l::mut Lexer = Lexer input: input pos: 0 readPos: 0 ch: '0'
     l readChar
     ^l
 ]
 
 Char isWhitespace -> Boolean = ^ (this == ' ') || (this == '\t') || (this == '\n') || (this == '\r')
 
-Lexer readChar = [
+mut Lexer readChar = [
     readPos >= input count =>
         ch <- '\u0000' |=>
         ch <- input at: readPos
@@ -27,7 +27,7 @@ Lexer peekChar -> Char = [
     |=> input at: (.readPos)
 ]
 
-Lexer nextToken -> Token = [
+mut Lexer nextToken -> Token = [
     .skipWhiteSpaces
     tok = | ch
     | '+' => [Token kind: TokenType.INC]
@@ -123,7 +123,7 @@ Lexer nextToken -> Token = [
     ^ tok
 ]
 
-Lexer readIdentifier -> String = [
+mut Lexer readIdentifier -> String = [
   localPos = pos
   [ch isLetter] whileTrue: [
     .readChar
@@ -132,7 +132,7 @@ Lexer readIdentifier -> String = [
   ^result
 ]
 
-Lexer skipWhiteSpaces = [
+mut Lexer skipWhiteSpaces = [
     [(ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r')] whileTrue: [
         .readChar
     ]

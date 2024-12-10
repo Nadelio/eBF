@@ -6,12 +6,12 @@ type Parser
 
 constructor Parser ast::AST = [
     token = Token kind: TokenType.INVALID
-    p = Parser ast: ast tok: token pos: 0 readPos: 0
+    p:: mut Parser = Parser ast: ast tok: token pos: 0 readPos: 0
     p readToken
     ^p
 ] 
 
-Parser readToken = [
+mut Parser readToken = [
     readPos >= ast tokens count =>
         tok <- Token kind: TokenType.EOF |=> 
         tok <- ast tokens at: readPos
@@ -26,7 +26,7 @@ Parser peekToken -> Token = [
         ast tokens at: (.readPos)
 ]
 
-Parser nextToken -> Command = [
+mut Parser nextToken -> Command = [
     cmd = | tok kind
     | TokenType.INC => [UnaryCommand kind: TokenType.INC]
     | TokenType.DEC => [UnaryCommand kind: TokenType.DEC]

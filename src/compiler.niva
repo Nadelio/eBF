@@ -9,7 +9,7 @@ type ECompiler
     bytecode = 0..25 |> toList // 20 and 21 are unused
     bytecodeLabels = {'F' 'L' 'N' 'C'}
 
-ECompiler readCommand = [
+mut ECompiler readCommand = [
     cmd <- readPos >= ast commands count 
         ifTrue: [UnaryCommand kind: TokenType.EOF]
         ifFalse: [ast commands at: readPos]

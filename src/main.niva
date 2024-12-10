@@ -13,7 +13,7 @@ input <- file readText
 isDebug => "debug mode enabled" echo 
 
 "Starting lexer" echo
-lexer = Lexer input: input
+lexer:: mut Lexer = Lexer input: input
 ast = AST empty
 [lexer ch != '\u0000'] whileTrue: [
     tok = lexer nextToken
@@ -24,7 +24,7 @@ isDebug => [ ast print ]
 
 "Starting parser" echo
 astc = ASTC empty
-parser = Parser ast: ast
+parser::mut Parser = Parser ast: ast
 [parser tok kind != TokenType.EOF] whileTrue: [
     command = parser nextToken
     isDebug => [ command kind echo ]
@@ -33,7 +33,7 @@ parser = Parser ast: ast
 isDebug => [ astc print ]
 
 "Starting interpreter" echo
-interpreter = Interpreter ast: astc
+interpreter:: mut Interpreter = Interpreter ast: astc
 errHandle = ErrorHandler name: "Interpreter"
 mut error = false
 [interpreter cmd kind != TokenType.EOF && error != true] whileTrue: [
