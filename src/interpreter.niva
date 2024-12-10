@@ -15,7 +15,7 @@ constructor Interpreter ast::ASTC = [
     tape::MutableList::Int = 0..65535 |> toMutableList
     stack::MutableList::Int = {}
 
-    i = Interpreter
+    i::mut Interpreter = Interpreter
             ast: ast
             cmd: cmd
             pos: 0
@@ -31,7 +31,7 @@ constructor Interpreter ast::ASTC = [
     ^i
 ]
 
-Interpreter readCommand = [
+mut Interpreter readCommand = [
     readPos >= ast commands count =>
         cmd <- UnaryCommand kind: TokenType.EOF |=> 
         cmd <- ast commands at: readPos
@@ -46,7 +46,7 @@ Interpreter peekCommand -> Command = [
     ast commands at: (.readPos)
 ]
 
-Interpreter readLastCommand = [
+mut Interpreter readLastCommand = [
     readPos >= 0 =>
         cmd <- UnaryCommand kind: TokenType.EOF |=> 
         cmd <- ast commands at: readPos dec
@@ -62,7 +62,7 @@ Interpreter peekLastCommand -> Command = [
 ]
 
 File runDependency -> Result = [
-    lexer = Lexer input: (this readText)
+    lexer::mut Lexer = Lexer input: (this readText)
     ast = AST empty
     [lexer ch != '\u0000'] whileTrue: [
         tok = lexer nextToken
@@ -70,7 +70,7 @@ File runDependency -> Result = [
     ]
 
     astc = ASTC empty
-    parser = Parser ast: ast
+    parser::mut Parser = Parser ast: ast
     [parser tok kind != TokenType.END] whileTrue: [
         command = parser nextToken
         astc append: command
@@ -85,7 +85,7 @@ File runDependency -> Result = [
     ^Success value: true
 ]
 
-Interpreter nextCommand -> Result! = [
+mut Interpreter nextCommand -> Result! = [
     //! for loops, DO NOT TOUCH
     mut c = 0
 
