@@ -4,7 +4,7 @@ type Lexer
     readPos: Int
     ch: Char
 
-constructor Lexer input::String = [
+constructor Lexer input::String -> Lexer = [
     l::mut Lexer = Lexer input: input pos: 0 readPos: 0 ch: '0'
     l readChar
     ^l

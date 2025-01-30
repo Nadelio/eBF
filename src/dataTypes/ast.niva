@@ -1,7 +1,7 @@
 type AST tokens: MutableList::Token
 
-constructor AST empty = [
-    ^AST tokens: {}
+constructor AST empty -> AST = [
+    ^AST tokens: {}m
 ]
 
 AST append::Token = tokens add: append
@@ -13,8 +13,8 @@ AST print = [
 
 type ASTC commands: MutableList::Command
 
-constructor ASTC empty = [
-    ^ASTC commands: {}
+constructor ASTC empty -> ASTC = [
+    ^ASTC commands: {}m
 ]
 
 ASTC append::Command = commands add: append

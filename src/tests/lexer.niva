@@ -21,7 +21,7 @@ Test stdAdd -> Unit! = [
         TokenType.END
     }
 
-    lexer = Lexer input: "<< , > << , [ < ' + , > ' - , ] < ' END"
+    lexer::mut Lexer = Lexer input: "<< , > << , [ < ' + , > ' - , ] < ' END"
     mut i = 0
     [lexer ch != '\u0000'] whileTrue: [
         tok = lexer nextToken
@@ -87,7 +87,7 @@ Test stdDivide -> Unit! = [
         TokenType.EOF
     }
 
-    lexer = Lexer input: data
+    lexer::mut Lexer = Lexer input: data
     mut i = 0
     [lexer ch != '\u0000'] whileTrue: [
         tok = lexer nextToken
