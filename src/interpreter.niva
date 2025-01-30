@@ -10,18 +10,18 @@ type Interpreter
     tape: MutableList::Int
     stack: MutableList::Int
 
-constructor Interpreter ast::ASTC = [
+constructor Interpreter ast::ASTC -> Interpreter = [
     cmd = UnaryCommand kind: TokenType.INVALID
     tape::MutableList::Int = 0..65535 |> toMutableList
-    stack::MutableList::Int = {}
+    stack::MutableList::Int = {}m
 
     i::mut Interpreter = Interpreter
             ast: ast
             cmd: cmd
             pos: 0
             readPos: 0
-            dpndMap: #{}
-            labelMap: #{}
+            dpndMap: #{}m
+            labelMap: #{}m
             pointerValue: 0
             pointerPosition: 0
             tape: tape
@@ -76,7 +76,7 @@ File runDependency -> Result = [
         astc append: command
     ]
 
-    interpreter = Interpreter ast: astc
+    interpreter::mut Interpreter = Interpreter ast: astc
     eop = UnaryCommand kind: TokenType.EOF
     [interpreter cmd kind != eop kind] whileTrue: [
         res = interpreter nextCommand
