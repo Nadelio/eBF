@@ -1,9 +1,9 @@
 # Extended Brainfuck
 Extended Brainfuck (eBF for short) is, as the name suggests, an extended variant of Brainfuck, the infamous esolang.\
-eBF was built for development inside of the [ePU](https://github.com/Nadelio/ePU).\
+eBF was built for development inside of the [Chronos Virtual Machine](https://github.com/Nadelio/Chronos-VM).\
 Kind of a crazy idea that it was built for use inside of a computer architecture.\
-I (Nadelio) have actually been using it for just that, development inside of the ePU computer architecture.\
-I started working on a simple [OS](https://github.com/Nadelio/ePU/tree/main/eBF%20External%20Programming/bin/OS), but (expectedly) haven't gotten very far.\
+I (Nadelio) have actually been using it for just that, development inside of the Chronos VM computer architecture.\
+I started working on a simple [OS](https://github.com/Nadelio/Chronos-VM/tree/main/eBF%20External%20Programming/bin/OS), but (expectedly) haven't gotten very far.\
 As a remedy, I've built a second language, [Hades](https://github.com/Nadelio/Hades-Programming-Language), to be a more approachable version of eBF, and in turn be a easier language to program the OS in.
 
 ## eBF Documentation
@@ -85,8 +85,8 @@ END
 
 - *printing to terminal follows the Java Character Code conventions
 
-### Unimplemented eBin operations
-- *Interpreter still can interpret these operations, but there are no relevant symbols inside eBF, meant for use with Nullify's Sphere to eBin Compiler*
+### Unimplemented Gaia Bytecode operations
+- *Interpreter still can interpret these operations, but there are no relevant symbols inside eBF, meant for use with Nullify's Sphere to Gaia Compiler*
 - `0000000000010100`: set pointer value to the following two bytes
 - `0000000000010101`: move pointer position up (decrement Y address)
 - `0000000000010110`: move pointer position down (increment Y address)
